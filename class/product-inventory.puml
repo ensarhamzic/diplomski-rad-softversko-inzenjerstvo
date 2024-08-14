@@ -1,0 +1,100 @@
+@startuml
+
+!$productOrderEntity = "ProductOrder"
+!$userEntity  = "UserRef"
+!$productEntity = "ProductRef"
+!$addressEntity = "AddressRef"
+!$productService = "ProductService"
+
+title Product Ordering API
+
+entity $productOrderEntity {
+    - id: String
+    - orderDate: Date
+    - requestedDeliveryDate: Date
+    - deliveryDate: Date
+    - product: $productEntity
+    - user: $userEntity
+    - address: $addressEntity
+    __
+    Getters and Setters
+}
+
+entity  $productEntity {
+    - id: String
+    - href: String
+    __
+    Getters and Setters
+}
+
+entity $addressEntity {
+    - id: String
+    - href: String
+    __
+    Getters and Setters
+}
+
+entity $userEntity {
+    - id: String
+    - href: String
+    __
+    Getters and Setters
+}
+
+
+note bottom of $userEntity: Reference to User Entity from User API
+note bottom of $productEntity: Reference to Product Entity from Product API
+note bottom of $addressEntity: Reference to Address Entity from Address API
+
+$productOrderEntity --o $productEntity
+$productOrderEntity --o $userEntity
+$productOrderEntity --o $addressEntity
+
+class ProductOrderController {
+    - productService: $productService
+    + createOrder(productOrder: $productOrderEntity): $productOrderEntity
+    + getOrder(id: String): $productOrderEntity
+    + updateOrder(id: String, productOrder: $productOrderEntity): $productOrderEntity
+    + cancelOrder(id: String): void
+}
+
+class $productService {
+    - productRepository: ProductRepository
+    - userApiClient: UserApiClient
+    - productApiClient: ProductApiClient
+    - addressApiClient: AddressApiClient
+    + createOrder(productOrder: $productOrderEntity): $productOrderEntity
+    + getOrder(id: String): $productEntity
+    + updateOrder(id: String, productOrder: $productOrderEntity): $productOrderEntity
+    + cancelOrder(id: String): void
+}
+
+class ProductRepository<extends JpaRepository> {
+    + save(productOrder: $productOrderEntity): $productOrderEntity
+    + getOrderById(id: String): $productEntity
+}
+
+class UserApiClient {
+    + getUserById(id: String): $userEntity
+}
+
+class ProductApiClient {
+    + getProductById(id: String): $productEntity
+}
+
+class AddressApiClient {
+    + getAddressById(id: String): $addressEntity
+}
+
+ProductOrderController --> $productService
+$productService --> ProductRepository
+$productService --> UserApiClient
+$productService --> ProductApiClient
+$productService --> AddressApiClient
+
+ProductRepository --> $productOrderEntity
+UserApiClient --> $userEntity
+ProductApiClient --> $productEntity
+AddressApiClient --> $addressEntity
+
+@enduml
