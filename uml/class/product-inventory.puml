@@ -34,6 +34,7 @@ entity $addressEntity {
     Getters and Setters
 }
 
+
 entity $userEntity {
     - id: String
     - href: String
@@ -69,7 +70,7 @@ class $productService {
     + cancelOrder(id: String): void
 }
 
-class ProductRepository<extends JpaRepository> {
+class ProductRepository<extends JpaRepository> <<TMT>> {
     + save(productOrder: $productOrderEntity): $productOrderEntity
     + getOrderById(id: String): $productEntity
 }
@@ -96,5 +97,4 @@ ProductRepository --> $productOrderEntity
 UserApiClient --> $userEntity
 ProductApiClient --> $productEntity
 AddressApiClient --> $addressEntity
-
 @enduml

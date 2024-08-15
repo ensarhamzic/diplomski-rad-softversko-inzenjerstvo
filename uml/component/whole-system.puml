@@ -1,0 +1,37 @@
+@startuml
+
+component "Product Ordering API" {
+    port "Order Entry"
+}
+component "Product Catalog API"
+component "Product Inventory API"
+component "User API"
+component "Geographic Address API"
+component "Product Qualification API"
+component "Reporting API"
+
+component "Customer GUI"
+component "Customer BFF"
+
+database "PostgreSQL"
+
+"Product Ordering API" --> "PostgreSQL"
+"Product Qualification API" --> "PostgreSQL"
+"Product Inventory API" --> "PostgreSQL"
+"Product Catalog API" --> "PostgreSQL"
+"User API" --> "PostgreSQL"
+"Geographic Address API" --> "PostgreSQL"
+"Reporting API" --> "PostgreSQL"
+
+"Product Ordering API" -r0)-> "Product Catalog API" : "Product Specification Validation"
+"Product Ordering API" -0)-> "Product Inventory API" : "Product Availability Check"
+"Product Ordering API" -u0)-> "Product Qualification API" : "Product Availability Check"
+"Product Ordering API" -0)-> "Geographic Address API" : "Address Lookup"
+"Product Ordering API" -0)-> "Reporting API" : "Reports Generation"
+"Product Ordering API" -u0)-> "Product Inventory API" : "Inventory Update"
+"Product Ordering API" -u0)-> "User API" : "User Lookup"
+
+"Customer GUI" -> "Customer BFF"
+ "Customer BFF" --> "Order Entry"
+
+@enduml
