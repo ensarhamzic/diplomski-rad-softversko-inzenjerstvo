@@ -1,12 +1,18 @@
 @startuml
 
+skinparam titleFontSize 25
+skinparam roundCorner 10
+
 !$productOrderEntity = "ProductOrder"
 !$userEntity  = "UserRef"
 !$productEntity = "ProductRef"
 !$addressEntity = "AddressRef"
 !$productService = "ProductService"
 
-title Product Ordering API
+title
+UML - Class Diagram
+Product Ordering API
+end title
 
 entity $productOrderEntity {
     - id: String

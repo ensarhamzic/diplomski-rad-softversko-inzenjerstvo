@@ -1,0 +1,88 @@
+@startuml
+
+skinparam titleFontSize 25
+skinparam roundCorner 10
+
+title
+UML - Deployment Diagram
+end title
+
+node "Microsoft Azure" <<cloud>> {
+    node "Kubernetes Cluster" {
+        node "Product Ordering" <<pod - Amazon Corretto JDK 21>> {
+            component "Product Ordering API"
+        }
+        node "Product Catalog" <<pod - Amazon Corretto JDK 21>> {
+            component "Product Catalog API"
+        }
+        node "Product Inventory" <<pod - Amazon Corretto JDK 21>> {
+            component "Product Inventory API"
+        }
+        node "User Management" <<pod - Amazon Corretto JDK 21>> {
+            component "User API"
+        }
+        node "Geographic Address Management" <<pod - Amazon Corretto JDK 21>> {
+            component "Geographic Address API"
+        }
+        node "Product Qualification" <<pod - Amazon Corretto JDK 21>> {
+            component "Product Qualification API"
+        }
+        node "Billing Management" <<pod - Amazon Corretto JDK 21>> {
+            component "Billing API"
+        }
+        node "Notification Management" <<pod - Amazon Corretto JDK 21>> {
+            component "Email API"
+            component "SMS API"
+        }
+        node "Reporting" <<pod - Amazon Corretto JDK 21>> {
+            component "Reporting API"
+        }
+        node "BFF" <<pod - Amazon Corretto JDK 21>> {
+            component "BFF API"
+        }
+        node "Gateway" <<pod - Amazon Corretto JDK 21>> {
+            component "API Gateway"
+        }
+        node "GUI" <<pod - Nginx>> {
+            component "Admin GUI"
+            component "Customer GUI"
+        }
+        node "Monitoring" <<pod - Amazon Corretto JDK 21>> {
+            component "Kibana"
+            component "Logstash"
+        }
+    }
+    node ElasticSearch <<database instance>> {
+        database Logs <<database>>
+    }
+
+    node PostgreSQL <<database instance>> {
+        database ProductOrderingData <<database>>
+        database ProductCatalogData <<database>>
+        database ProductInventoryData <<database>>
+        database UserData <<database>>
+        database GeographicAddressData <<database>>
+        database ProductQualificationData <<database>>
+        database BillingData <<database>>
+        database NotificationData <<database>>
+        database ReportingData <<database>>
+    }
+}
+
+"Kubernetes Cluster" -down-> ElasticSearch
+"Kubernetes Cluster" -> PostgreSQL
+
+' Layout ---------------------------------------------------
+"Monitoring" -[hidden]-> Gateway
+GUI -[hidden]-> "Reporting"
+"Notification Management" -[hidden]-> "Billing Management"
+"Notification Management" -[hidden]-> "Product Qualification"
+"Product Qualification" -[hidden]-> "Geographic Address Management"
+Gateway -[hidden]-> "Product Ordering"
+"Reporting" -[hidden]-> "Product Catalog"
+"Billing Management" -[hidden]-> "Product Inventory"
+"Geographic Address Management" -[hidden]-> "User Management"
+[Product Ordering] -[hidden]u------> "PostgreSQL"
+"Kubernetes Cluster" -[hidden]u---> ElasticSearch
+' -----------------------------------------------------------
+@enduml

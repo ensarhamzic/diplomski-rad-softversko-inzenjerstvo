@@ -1,5 +1,12 @@
 @startuml
 
+skinparam titleFontSize 25
+skinparam roundCorner 10
+
+title
+UML - Component Diagram
+end title
+
 component "Product Ordering API" {
     port "Order Entry"
 }
