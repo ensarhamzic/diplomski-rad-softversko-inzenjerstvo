@@ -1,0 +1,36 @@
+@startuml
+
+skinparam titleFontSize 25
+skinparam roundCorner 10
+
+title
+UML - Use Case Diagram
+end title
+
+left to right direction
+
+actor Customer
+actor "Credit Payment System"
+actor PayPal
+actor "PDF Generator"
+
+rectangle "Product Ordering System" {
+    (Cancel Order) ..> (Get refund) : <<include>>
+    (View products) ..> (Search products) : <<extends>>
+    (Order product) ..> (Pay for product) : <<include>>
+    (Order product) ..> (See order details) : <<extends>>
+    (See order details) ..> (Print invoice) : <<extends>>
+    (Order product) ..> (See bought products) : <<extends>>
+}
+
+Customer -- (Order product)
+Customer -- (View products)
+Customer -- (Cancel Order)
+(Pay for product)  --- "Credit Payment System"
+(Pay for product)  --- "PayPal"
+(Get refund)  --- "Credit Payment System"
+(Get refund)  --- "PayPal"
+(Print invoice)  -- "PDF Generator"
+
+
+@enduml
