@@ -1,0 +1,58 @@
+@startuml
+skinparam titleFontSize 25
+
+title
+UML - State Diagram
+end title
+
+state "Acknowledged" as acknowledged
+state "In Progress" as inProgress
+state "Rejected" as rejected
+state "Completed" as completed
+state "Partially Completed" as partial
+state "Canceled" as canceled
+state "Pending" as pending
+state "Failed" as failed
+
+[*] -down-> acknowledged
+acknowledged : Product order received and
+acknowledged: passed basic validation
+
+acknowledged --> inProgress: Start order
+inProgress: Product realization has started
+
+acknowledged --> rejected: Reject order
+rejected: Order did not pass
+rejected: all business rules
+
+inProgress --> completed: Complete order
+completed: Order has been provisioned
+completed: and all product services are now active
+
+inProgress --> partial: Partially complete order
+partial: Order has been partially provisioned
+partial: and some product services are now active
+
+inProgress -> canceled: Cancel order
+canceled: Order has been canceled
+canceled: and the product is not delivered.
+canceled: Product services are not active
+
+inProgress --> pending: Order needs more information\nfrom the customer
+pending: Waiting for an action or activity
+
+pending --> inProgress: Customer provided\nadditional information
+
+pending --> failed: No response from the customer
+failed: Order has been terminated
+failed: due to no response from the customer
+
+rejected -> [*]
+completed -> [*]
+partial -> [*]
+canceled -> [*]
+failed -> [*]
+
+' layout
+canceled -[hidden]-> completed
+@enduml

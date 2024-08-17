@@ -1,0 +1,59 @@
+@startuml
+skinparam titleFontSize 25
+
+title
+UML - Activity Diagram
+end title
+
+|User|
+start
+:login;
+repeat
+:input address;
+|Geographic Address API|
+:validate address;
+repeat while (Address is valid?) is (no)
+-> yes;
+|Product Catalog API|
+:Get all products;
+|Product Qualification API|
+:Filter available products;
+if (Products available?) then (yes)
+    |User|
+    :add product to cart;
+    :checkout;
+    repeat
+    repeat
+    switch (Payment method)
+    case (Credit Card)
+        :Enter Credit Card information;
+    case (PayPal)
+        |User|
+        :Enter PayPal information;
+    endswitch
+    |Billing API|
+    :validate information;
+     repeat while (Information valid?) is (no)
+     -> yes;
+    :process payment;
+    repeat while (Payment successful?) is (no)
+    -> yes;
+     |Product Ordering API|
+    fork
+       |Product Ordering API|
+       :create order;
+    fork again
+        |Reporting API|
+        :Generate invoice PDF;
+        |Email API|
+        :Send confirmation email\nwith invoice;
+    |Product Ordering API|
+    end fork
+    |Product Ordering API|
+    stop
+    else (no)
+        |Product Qualification API|
+        stop
+endif
+
+@enduml
