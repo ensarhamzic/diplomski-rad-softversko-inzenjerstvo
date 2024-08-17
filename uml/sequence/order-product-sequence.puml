@@ -5,38 +5,50 @@ title
 UML - Sequence Diagram
 end title
 
-"Customer" -> "Customer GUI": input address
-"Customer GUI" -> "Geographic Address API": validate address request
+autonumber
+
+loop address not valid
+"Customer" -> "Customer GUI" ++: input address
+"Customer GUI" -> "Geographic Address API" ++: validate address request
 "Geographic Address API" -> "Geographic Address API": validate address
-"Geographic Address API" --> "Customer GUI": address is valid
+"Geographic Address API" --> "Customer GUI" -- : address validity
+end
 
-"Customer GUI" -> "Product Catalog API": get all products request
+"Customer GUI" -> "Product Catalog API" ++: get all products request
 "Product Catalog API" -> "Product Catalog API": get all products
-"Product Catalog API" --> "Customer GUI": all products
+"Product Catalog API" --> "Customer GUI" --: all products
 
-"Customer GUI" -> "Product Qualification API": filter available products request
+"Customer GUI" -> "Product Qualification API" ++: filter available products request
 "Product Qualification API" -> "Product Qualification API": filter available products
-"Product Qualification API" --> "Customer GUI": available products
+"Product Qualification API" --> "Customer GUI" --: products list
+alt products list not empty
 "Customer GUI" -> "Customer GUI": show available products
 
 "Customer" -> "Customer GUI": select product
 "Customer" -> "Customer GUI": add product to cart
 "Customer GUI" -> "Customer GUI": cart update
 "Customer" -> "Customer GUI": checkout
+loop payment not successful
 "Customer" -> "Customer GUI": fill payment information
-"Customer GUI" -> "Billing API": payment request
+"Customer GUI" -> "Billing API" ++: payment request
 "Billing API" -> "Billing API": validate payment information
-"Billing API" --> "Customer GUI": payment information validity
-"Customer GUI" -> "Product Ordering API": create order request
+"Billing API" -> "Billing API": process payment
+"Billing API" --> "Customer GUI" --: payment result
+end
+"Customer GUI" -> "Product Ordering API" ++: create order request
 "Product Ordering API" -> "Product Ordering API": validate order
 "Product Ordering API" -> "Product Ordering API": create order
-"Product Ordering API" -> "Reporting API": generate invoice PDF
+"Product Ordering API" -> "Reporting API" ++: generate invoice PDF
 "Reporting API" -> "Reporting API": PDF invoice generation
-"Reporting API" --> "Product Ordering API": invoice
-"Product Ordering API" -> "Email API": send confirmation email with invoice
-"Email API" -> "Email API": send email
-"Email API" --> "Product Ordering API": email sent
+"Reporting API" --> "Product Ordering API" --: invoice
+"Product Ordering API" -> "Email API" ++: send confirmation email with invoice
+"Email API" -> "Customer": send email
+"Email API" --> "Product Ordering API" --: email sent
 
-"Product Ordering API" --> "Customer GUI": order created
+"Product Ordering API" --> "Customer GUI" --: order created
 "Customer GUI" -> "Customer GUI": show order details
+
+else products list empty
+"Customer GUI" -> "Customer GUI": show no products available
+end
 @enduml
