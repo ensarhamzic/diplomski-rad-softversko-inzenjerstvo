@@ -1,0 +1,20 @@
+@startuml C4_Context
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Product Ordering System - Context Diagram
+
+Person(customer, "Customer", "Places orders, views available products")
+Person(admin, "Admin", "Manages product catalog, user accounts")
+
+System(productOrderingSystem, "Product Ordering System", "Handles product ordering and management for telecommunications services")
+
+System_Ext(paymentGateway, "Payment Gateway", "Processes payments")
+System_Ext(emailService, "Email Service", "Sends order update emails")
+
+Rel(customer, productOrderingSystem, "Places Order")
+Rel(admin, productOrderingSystem, "Manages")
+Rel(productOrderingSystem, paymentGateway, "Processes Payment")
+Rel(productOrderingSystem, emailService, "Sends Confirmation Email")
+
+@enduml
