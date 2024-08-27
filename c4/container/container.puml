@@ -1,0 +1,78 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Container diagram for Internet Banking System
+
+Person(customer, "Customer", "Places orders, views available products")
+Person(admin, "Admin", "Manages product catalog, user accounts")
+
+System_Boundary(system, "Product Ordering") {
+    Container(orderApi, "Product Ordering API", "Java Spring Boot REST API", "Handles orders and manages their lifecycle")
+    Container(catalogApi, "Product Catalog API", "Java Spring Boot REST API", "Provides product information")
+    Container(inventoryApi, "Product Inventory API", "Java Spring Boot REST API", "Manages realized products")
+    Container(userApi, "User API", "Java Spring Boot REST API", "Manages user information")
+    Container(geoApi, "Geographic Address API", "Java Spring Boot REST API", "Provides address information")
+    Container(qualificationApi, "Product Qualification API", "Java Spring Boot REST API", "Provides product availability information")
+    Container(billingApi, "Billing API", "Java Spring Boot REST API", "Provides billing information and manages payments")
+    Container(emailApi, "Email API", "Java Spring Boot REST API", "Sends order update emails")
+    Container(reportingApi, "Reporting API", "Java Spring Boot REST API", "Provides reporting information")
+    Container(adminGui, "Admin GUI", "JavaScript, Angular", "Manages users and products")
+    Container(customerGui, "Customer GUI", "JavaScript, Angular", "Customer access point")
+    Container(logstash, "Logstash", "Log Aggregation", "Collects logs and sends them to ElasticSearch")
+    Container(kibana, "Kibana", "Log Aggregation", "Provides log search and visualization")
+    ContainerDb(postgresDb, "PostgreSQL", "SQL Database", "Stores user info, product info, order info, etc.")
+    ContainerDb(elasticDb, "ElasticSearch", "NoSQL Database", "Stores logs and replicated data from the primary database")
+}
+
+System_Ext(paymentService, "Payment Gateway", "Processes payments")
+System_Ext(emailService, "Email Service", "Sends order update emails")
+
+Rel_U(orderApi, catalogApi, "Gets product information from")
+Rel_U(orderApi, inventoryApi, "Stores realized products in")
+Rel_U(orderApi, userApi, "Gets user information from")
+Rel_U(orderApi, geoApi, "Gets address information from")
+Rel_U(orderApi, qualificationApi, "Gets product availability information from")
+Rel(orderApi, billingApi, "Executes payments using")
+Rel(orderApi, emailApi, "Sends emails using")
+Rel(orderApi, reportingApi, "Generates invoices using")
+
+Rel_L(orderApi, postgresDb, "Stores data in")
+Rel(catalogApi, postgresDb, "Stores data in")
+Rel(inventoryApi, postgresDb, "Stores data in")
+Rel(userApi, postgresDb, "Stores data in")
+Rel(geoApi, postgresDb, "Stores data in")
+Rel(qualificationApi, postgresDb, "Stores data in")
+Rel(billingApi, postgresDb, "Stores data in")
+Rel(emailApi, postgresDb, "Stores data in")
+Rel(reportingApi, postgresDb, "Stores data in")
+Rel(logstash, elasticDb, "Saves logs to")
+
+Rel(orderApi, logstash, "Sends logs to")
+Rel(catalogApi, logstash, "Sends logs to")
+Rel(inventoryApi, logstash, "Sends logs to")
+Rel(userApi, logstash, "Sends logs to")
+Rel(geoApi, logstash, "Sends logs to")
+Rel(qualificationApi, logstash, "Sends logs to")
+Rel(billingApi, logstash, "Sends logs to")
+Rel(emailApi, logstash, "Sends logs to")
+Rel(reportingApi, logstash, "Sends logs to")
+
+Rel(kibana, elasticDb, "Searches logs in")
+
+Rel(customer, customerGui, "Uses")
+Rel(admin, adminGui, "Uses")
+
+Rel(customerGui, orderApi, "Places orders using")
+Rel(adminGui, catalogApi, "Manages products using")
+Rel(adminGui, userApi, "Manages users using")
+Rel(adminGui, geoApi, "Manages addresses using")
+
+Rel_U(billingApi, paymentService, "Processes payments using")
+Rel_U(emailApi, emailService, "Sends emails using")
+Rel_U(emailService, customer, "Sends order updates to")
+
+Lay_D(qualificationApi, catalogApi)
+Lay_D(customerGui, inventoryApi)
+Lay_D(catalogApi, inventoryApi)
+Lay_R(logstash, postgresDb)
+@enduml
