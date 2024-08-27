@@ -10,7 +10,7 @@ state "In Progress" as inProgress
 state "Rejected" as rejected
 state "Completed" as completed
 state "Partially Completed" as partial
-state "Canceled" as canceled
+state "Cancelled" as cancelled
 state "Pending" as pending
 state "Failed" as failed
 
@@ -33,10 +33,10 @@ inProgress --> partial: Partially complete order
 partial: Order has been partially provisioned
 partial: and some product services are now active
 
-inProgress -> canceled: Cancel order
-canceled: Order has been canceled
-canceled: and the product is not delivered.
-canceled: Product services are not active
+inProgress -> cancelled: Cancel order
+cancelled: Order has been cancelled
+cancelled: and the product is not delivered.
+cancelled: Product services are not active
 
 inProgress --> pending: Order needs more information\nfrom the customer
 pending: Waiting for an action or activity
@@ -50,9 +50,9 @@ failed: due to no response from the customer
 rejected -> [*]
 completed -> [*]
 partial -> [*]
-canceled -> [*]
+cancelled -> [*]
 failed -> [*]
 
 ' layout
-canceled -[hidden]-> completed
+cancelled -[hidden]-> completed
 @enduml
