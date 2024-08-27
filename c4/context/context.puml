@@ -2,6 +2,8 @@
 
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
+skinparam titleFontSize 25
+
 title Product Ordering System - Context Diagram
 
 Person(customer, "Customer", "Places orders, views available products")

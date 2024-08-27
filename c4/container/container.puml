@@ -1,7 +1,9 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-title Container diagram for Internet Banking System
+skinparam titleFontSize 25
+
+title C4 - Container Diagram
 
 Person(customer, "Customer", "Places orders, views available products")
 Person(admin, "Admin", "Manages product catalog, user accounts")
@@ -18,25 +20,46 @@ System_Boundary(system, "Product Ordering") {
     Container(reportingApi, "Reporting API", "Java Spring Boot REST API", "Provides reporting information")
     Container(adminGui, "Admin GUI", "JavaScript, Angular", "Manages users and products")
     Container(customerGui, "Customer GUI", "JavaScript, Angular", "Customer access point")
-    Container(logstash, "Logstash", "Log Aggregation", "Collects logs and sends them to ElasticSearch")
-    Container(kibana, "Kibana", "Log Aggregation", "Provides log search and visualization")
+'    Container(logstash, "Logstash", "Log Aggregation", "Collects logs and sends them to ElasticSearch")
+'    Container(kibana, "Kibana", "Log Aggregation", "Provides log search and visualization")
     ContainerDb(postgresDb, "PostgreSQL", "SQL Database", "Stores user info, product info, order info, etc.")
-    ContainerDb(elasticDb, "ElasticSearch", "NoSQL Database", "Stores logs and replicated data from the primary database")
+'    ContainerDb(elasticDb, "ElasticSearch", "NoSQL Database", "Stores logs")
 }
 
 System_Ext(paymentService, "Payment Gateway", "Processes payments")
 System_Ext(emailService, "Email Service", "Sends order update emails")
 
-Rel_U(orderApi, catalogApi, "Gets product information from")
-Rel_U(orderApi, inventoryApi, "Stores realized products in")
-Rel_U(orderApi, userApi, "Gets user information from")
-Rel_U(orderApi, geoApi, "Gets address information from")
-Rel_U(orderApi, qualificationApi, "Gets product availability information from")
-Rel(orderApi, billingApi, "Executes payments using")
-Rel(orderApi, emailApi, "Sends emails using")
-Rel(orderApi, reportingApi, "Generates invoices using")
+Lay_D(admin,customer)
+Lay_D(emailService,paymentService)
+Lay_D(admin,emailService)
+Lay_D(customer,emailService)
 
-Rel_L(orderApi, postgresDb, "Stores data in")
+Lay_D(orderApi,catalogApi)
+Lay_D(catalogApi,inventoryApi)
+Lay_D(inventoryApi,userApi)
+'Lay_D(userApi,geoApi)
+Lay_D(geoApi,qualificationApi)
+Lay_R(orderApi,billingApi)
+Lay_D(billingApi,emailApi)
+Lay_D(emailApi,reportingApi)
+'Lay_R(orderApi, adminGui)
+Lay_D(adminGui, customerGui)
+Lay_D(customerGui, logstash)
+'Lay_D(logstash, kibana)
+
+Lay_R(billingApi,postgresDb)
+'Lay_D(postgresDb,elasticDb)
+
+Rel_L(orderApi, catalogApi, "Gets product information from")
+Rel_L(orderApi, inventoryApi, "Stores realized products in")
+Rel(orderApi, userApi, "Gets user information from")
+Rel(orderApi, geoApi, "Gets address information from")
+Rel_L(orderApi, qualificationApi, "Gets product availability information from")
+Rel_L(orderApi, billingApi, "Executes payments using")
+Rel(orderApi, emailApi, "Sends emails using")
+Rel_L(orderApi, reportingApi, "Generates invoices using")
+
+Rel(orderApi, postgresDb, "Stores data in")
 Rel(catalogApi, postgresDb, "Stores data in")
 Rel(inventoryApi, postgresDb, "Stores data in")
 Rel(userApi, postgresDb, "Stores data in")
@@ -45,19 +68,19 @@ Rel(qualificationApi, postgresDb, "Stores data in")
 Rel(billingApi, postgresDb, "Stores data in")
 Rel(emailApi, postgresDb, "Stores data in")
 Rel(reportingApi, postgresDb, "Stores data in")
-Rel(logstash, elasticDb, "Saves logs to")
+'Rel_U(logstash, elasticDb, "Saves logs to")
 
-Rel(orderApi, logstash, "Sends logs to")
-Rel(catalogApi, logstash, "Sends logs to")
-Rel(inventoryApi, logstash, "Sends logs to")
-Rel(userApi, logstash, "Sends logs to")
-Rel(geoApi, logstash, "Sends logs to")
-Rel(qualificationApi, logstash, "Sends logs to")
-Rel(billingApi, logstash, "Sends logs to")
-Rel(emailApi, logstash, "Sends logs to")
-Rel(reportingApi, logstash, "Sends logs to")
+'Rel_U(orderApi, logstash, "Sends logs to")
+'Rel_U(catalogApi, logstash, "Sends logs to")
+'Rel_U(inventoryApi, logstash, "Sends logs to")
+'Rel(userApi, logstash, "Sends logs to")
+'Rel(geoApi, logstash, "Sends logs to")
+'Rel(qualificationApi, logstash, "Sends logs to")
+'Rel(billingApi, logstash, "Sends logs to")
+'Rel(emailApi, logstash, "Sends logs to")
+'Rel(reportingApi, logstash, "Sends logs to")
 
-Rel(kibana, elasticDb, "Searches logs in")
+'Rel(kibana, elasticDb, "Searches logs in")
 
 Rel(customer, customerGui, "Uses")
 Rel(admin, adminGui, "Uses")
@@ -67,12 +90,8 @@ Rel(adminGui, catalogApi, "Manages products using")
 Rel(adminGui, userApi, "Manages users using")
 Rel(adminGui, geoApi, "Manages addresses using")
 
-Rel_U(billingApi, paymentService, "Processes payments using")
-Rel_U(emailApi, emailService, "Sends emails using")
-Rel_U(emailService, customer, "Sends order updates to")
+Rel(billingApi, paymentService, "Processes payments using")
+Rel(emailApi, emailService, "Sends emails using")
+Rel(emailService, customer, "Sends order updates to")
 
-Lay_D(qualificationApi, catalogApi)
-Lay_D(customerGui, inventoryApi)
-Lay_D(catalogApi, inventoryApi)
-Lay_R(logstash, postgresDb)
 @enduml
