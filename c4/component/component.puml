@@ -1,0 +1,48 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+skinparam titleFontSize 25
+skinparam arrowFontSize 17
+
+title C4 - Component Diagram
+
+Container(catalogApi, "Product Catalog API", "Java Spring Boot REST API", "Provides product information")
+Container(inventoryApi, "Product Inventory API", "Java Spring Boot REST API", "Manages realized products")
+Container(userApi, "User API", "Java Spring Boot REST API", "Manages user information")
+
+Container(geoApi, "Geographic Address API", "Java Spring Boot REST API", "Provides address information")
+Container(qualificationApi, "Product Qualification API", "Java Spring Boot REST API", "Provides product availability information")
+Container(billingApi, "Billing API", "Java Spring Boot REST API", "Provides billing information and manages payments")
+Container(emailApi, "Email API", "Java Spring Boot REST API", "Sends order update emails")
+Container(reportingApi, "Reporting API", "Java Spring Boot REST API", "Provides reporting information")
+Container(customerGui, "Customer GUI", "JavaScript, Angular", "Customer access point")
+ContainerDb(postgresDb, "PostgreSQL", "SQL Database", "Stores user info, product info, order info, etc.")
+
+Container_Boundary(orderingApi, "Product Ordering API") {
+    Component(productController, "ProductOrderController", "Spring Boot Controller", "Handles order requests")
+    Component(productService, "ProductService", "Spring Service Bean", "Handles orders and manages their modification")
+    Component(productRepository, "ProductRepository", "JPA Repository", "Manages product data")
+
+    Rel(productController, productService, "Uses")
+    Rel(productService, productRepository, "Uses")
+}
+
+Rel(productRepository, postgresDb, "Reads from and writes to [Hibernate]")
+Rel(customerGui, productController, "Makes requests to")
+
+Rel(productService, catalogApi, "Gets product information from [REST]")
+Rel(productService, inventoryApi, "Stores realized products in [REST]")
+Rel(productService, userApi, "Gets user information from [REST]")
+Rel(productService, geoApi, "Gets address information from [REST]")
+Rel(productService, qualificationApi, "Gets product availability information from [REST]")
+Rel(productService, billingApi, "Executes payments using [REST]")
+Rel(productService, emailApi, "Sends emails using [REST]")
+Rel(productService, reportingApi, "Generates invoices using [REST]")
+
+Lay_D(catalogApi,inventoryApi)
+Lay_D(userApi,geoApi)
+Lay_D(qualificationApi,billingApi)
+Lay_D(emailApi,reportingApi)
+
+Lay_U(userApi,qualificationApi)
+@enduml
