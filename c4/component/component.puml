@@ -1,10 +1,7 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
-skinparam titleFontSize 25
 skinparam arrowFontSize 17
-
-title C4 - Component Diagram
 
 Container(catalogApi, "Product Catalog API", "Java Spring Boot REST API", "Provides product information")
 Container(inventoryApi, "Product Inventory API", "Java Spring Boot REST API", "Manages realized products")

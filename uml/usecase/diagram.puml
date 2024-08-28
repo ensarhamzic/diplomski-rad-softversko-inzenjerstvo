@@ -1,11 +1,5 @@
 @startuml
-
-skinparam titleFontSize 25
 skinparam roundCorner 10
-
-title
-UML - Use Case Diagram
-end title
 
 left to right direction
 

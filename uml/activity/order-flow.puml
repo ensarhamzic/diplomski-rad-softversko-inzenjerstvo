@@ -1,9 +1,4 @@
 @startuml
-skinparam titleFontSize 25
-
-title
-UML - Activity Diagram
-end title
 
 |User|
 start

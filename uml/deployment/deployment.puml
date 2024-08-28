@@ -1,10 +1,5 @@
 @startuml
-skinparam titleFontSize 25
 skinparam roundCorner 10
-
-title
-UML - Deployment Diagram
-end title
 
 node "Microsoft Azure" <<cloud>> {
     node "Kubernetes Cluster" {

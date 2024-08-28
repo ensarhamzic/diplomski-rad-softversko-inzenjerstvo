@@ -1,10 +1,4 @@
 @startuml
-skinparam titleFontSize 25
-
-title
-UML - State Diagram
-end title
-
 state "Acknowledged" as acknowledged
 state "In Progress" as inProgress
 state "Rejected" as rejected

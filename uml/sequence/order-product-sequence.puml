@@ -1,10 +1,4 @@
 @startuml
-skinparam titleFontSize 25
-
-title
-UML - Sequence Diagram
-end title
-
 autonumber
 
 loop address not valid
